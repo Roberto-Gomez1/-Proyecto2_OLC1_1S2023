@@ -44,6 +44,9 @@
 ">"                 return 'MAYORQUE';
 "<"                 return 'MENORQUE';
 "!="                return 'DIFERENTE';
+"&&"                return 'AND';
+"||"                return 'OR';
+"!"                 return 'NOT';
 
 
 
@@ -94,10 +97,11 @@
   const {For} = require('./instruction/For');
   const {If} = require('./instruction/If');
   const {Ternario} = require('./expression/Ternario');
-
-
+  const {Logico} = require('./expression/Logico');
+  const {TipoLogico} = require('./utils/TipoLogico');
+  const {Agrupacion} = require('./expression/Agrupacion');
 %}
-
+%left 'AND' 'OR' 'NOT'
 %left 'KLEENE' 'DOSPUNTOS'
 %left 'MENORQUE' 'MAYORQUE' 'MENORIGUAL' 'MAYORIGUAL' 'IGUALIGUAL' 'DIFERENTE'
 %left 'MAS' 'MENOS'
@@ -182,6 +186,8 @@ EXPRESION
   | ARITMETICA      { $$ = $1; }
   | RELACIONALES    { $$ = $1; }
   | TERNARIO        { $$ = $1; }
+  | LOGICO          { $$ = $1; }
+  | AGRUPACION      { $$ = $1; }
 ;
 
 LLAMADAFUNCION
@@ -217,6 +223,17 @@ RELACIONALES
 TERNARIO
   :EXPRESION KLEENE EXPRESION DOSPUNTOS EXPRESION { $$ = new Ternario($1,$3,$5,@1.first_line, @1.first_column); }
   ;
+
+
+LOGICO
+: EXPRESION AND EXPRESION { $$ = new Logico($1,$3,TipoLogico.AND,@1.first_line, @1.first_column); }
+| EXPRESION OR EXPRESION { $$ = new Logico($1,$3,TipoLogico.OR,@1.first_line, @1.first_column); }
+| NOT EXPRESION { $$ = new Logico($2,$2,TipoLogico.NOT,@1.first_line, @1.first_column); }
+;
+
+AGRUPACION
+  : PARIZQ EXPRESION PARDER { $$ = new Agrupacion($2,@1.first_line,@1.first_column); }
+;
 
 ACCEDERVAR
   : ID              { $$ = new Acceso($1,@1.first_line, @1.first_column); }
