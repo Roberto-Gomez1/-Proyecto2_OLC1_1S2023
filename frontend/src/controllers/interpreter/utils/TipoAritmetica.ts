@@ -3,8 +3,9 @@ export enum TipoAritmetica {
     RESTA,
     MULTIPLICACION,
     DIVISION,
-    MENOSUNARIO,  // -1
+    MENOSUNARIO,
     POTENCIA,
-    MODULO
+    MODULO,
+    INCREMENTO,
 }
   

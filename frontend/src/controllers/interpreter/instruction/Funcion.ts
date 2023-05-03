@@ -13,7 +13,7 @@ export class Funcion extends Instruction{
         env.guardarFuncion(this.id,this);
     }
     public drawAst(): { rama: string; nodo: string; } {
-        return {rama:"",nodo:''};
-     }
+        return {rama:"", nodo:""};
+      }
     
 }

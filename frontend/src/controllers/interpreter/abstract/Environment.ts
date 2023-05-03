@@ -5,12 +5,9 @@ import { Funcion } from "../instruction/Funcion";
 import { ListaTabla,TablaSimbolos } from "../Reports/TablaSimbolos";
 
 export class Environment {
-    private variables = new Map<string, Simbolo>();   
-    private funciones = new Map<string, Funcion>();   
+    private variables = new Map<string, Simbolo>();   //  mapa de variables
+    private funciones = new Map<string, Funcion>();   //  mapa de variables
    
-
-   
-  
     constructor(private anterior: Environment | null) {
       this.variables = new Map<string, Simbolo>();
       
@@ -26,6 +23,7 @@ export class Environment {
       }
   
     }
+
     public getVar(id: string): Simbolo | null { 
       let env: Environment | null = this;
 
@@ -37,6 +35,7 @@ export class Environment {
       }  
       return null;  
     }
+
   public guardarFuncion(id: string, funcion: Funcion) {
     let env: Environment | null = this;
 
@@ -47,10 +46,8 @@ export class Environment {
     }
   }
 
-
   public getFuncion(id: string): Funcion | null {
     let env: Environment | null = this;
-
     while (env != null) {
       if (env.funciones.has(id.toLowerCase())) {
         return env.funciones.get(id.toLowerCase())!;
@@ -69,4 +66,19 @@ export class Environment {
     }
     return env;
   }
+
+  public modificar(id: string, valor: any) {
+    let env: Environment | null = this;
+    while (env != null) {
+      if (env.variables.has(id.toLowerCase())) {
+        env.variables.get(id.toLowerCase())!.valor = valor;
+        return;
+      }
+      env = env.anterior;
+    }
+  }
+
+
+
 }
+  

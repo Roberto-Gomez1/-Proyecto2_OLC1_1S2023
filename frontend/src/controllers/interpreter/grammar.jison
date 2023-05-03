@@ -1,3 +1,4 @@
+
 %lex
 
 %options case-insensitive
@@ -19,9 +20,13 @@
 "?"                 return 'KLEENE';
 "="                 return 'IGUAL';
 
-"print"          return 'RPRIN';   // funcion de imprimir
+"print"             return 'RPRIN';   // funcion de imprimir
 "true"              return 'TRUE';
 "false"             return 'FALSE';
+"for"               return 'RFOR';
+"if"                return 'RIF';
+"else"              return 'RELSE';
+
 
 "+"                 return 'MAS';
 "-"                 return 'MENOS';
@@ -29,6 +34,8 @@
 "/"                 return 'DIVISION';
 "^"                 return 'POTENCIA';
 "%"                 return 'MODULO';
+"<"                 return 'MENORQUE';
+">"                 return 'MAYORQUE';
 
 
 
@@ -68,6 +75,7 @@
 %{
   const {Type} = require('./abstract/Return');
   const {TipoAritmetica} = require('./utils/TipoAritmetica');
+  const {TipoRelacional} = require('./utils/TipoRelacional');
   const {Primitivo} = require('./expression/Primitivo');
   const {Print} = require('./instruction/Print');
   const {Declarar} = require('./instruction/Declarar');
@@ -77,16 +85,23 @@
   const {Funcion} = require('./instruction/Funcion');
   const {Parametros} = require('./expression/Parametros');
   const {LlamadaFuncion} = require('./expression/LlamadaFuncion');
+  const {Relacional} = require('./expression/Relacional');
+  const {OperacionesUnarios} = require('./expression/OperacionesUnarios');
+  const {For} = require('./instruction/For');
+  const {If} = require('./instruction/If');
+
+
 %}
 
 
+%left 'MENORQUE' 'MAYORQUE'
 %left 'MAS' 'MENOS'
 %left 'POR' 'DIVISION' 'MODULO'
 %right 'UMENOS '
 
 %start INICIO
 
-%% 
+%%
 
 INICIO
 	: INSTRUCCIONES EOF {return $1;}
@@ -99,9 +114,11 @@ INSTRUCCIONES
 
 INSTRUCCION
 	: DEFPRINT          { $$ = $1; }
-  | DECLARAR          { $$ = $1; }
+  | DECLARAR PTCOMA          { $$ = $1; }
   | LLAMADAFUNCION PTCOMA    { $$ = $1; } 
   | GUARDARFUNCION         { $$ = $1; }
+  | FOR   { $$ = $1; }
+  | CONTROLIF    { $$ = $1; }
 	| error PTCOMA
   {   console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column);}
 ;
@@ -110,11 +127,11 @@ DEFPRINT
     : RPRIN PARIZQ EXPRESION PARDER PTCOMA  { $$ = new Print(@1.first_line, @1.first_column,$3); }
 ;
 
-
 DECLARAR
-    : TIPO ID PTCOMA  { $$ = new Declarar($2,$1,null,@1.first_line, @1.first_column ); }
-    | TIPO ID IGUAL EXPRESION PTCOMA  { $$ = new Declarar($2,$1,$4,@1.first_line, @1.first_column ); }
+    : TIPO ID   { $$ = new Declarar($2,$1,null,@1.first_line, @1.first_column ); }
+    | TIPO ID IGUAL EXPRESION   { $$ = new Declarar($2,$1,$4,@1.first_line, @1.first_column ); }
 ;
+
 
 GUARDARFUNCION
   : TIPO ID PARIZQ PARDER STATEMENT  { $$ = new Funcion($1,$2,[],$5,@1.first_line, @1.first_column ); }
@@ -135,10 +152,30 @@ PARAMETRO
   : TIPO ID  {$$ = new Parametros($1,$2,@1.first_line, @1.first_column);}
 ;
 
+
+FOR
+  : RFOR PARIZQ DECLARAR PTCOMA EXPRESION PTCOMA OPERACIONESUNARIOS PARDER STATEMENT  { $$ = new For($3,$5,$7,$9,@1.first_line, @1.first_column); }
+;
+
+OPERACIONESUNARIOS
+  :ID MAS MAS  { $$ = new OperacionesUnarios($1,TipoAritmetica.INCREMENTO,@1.first_line, @1.first_column); }
+;
+
+CONTROLIF 
+  : RIF PARIZQ EXPRESION PARDER STATEMENT CONTROLELSE { $$ = new If($3,$5,$6,@1.first_line, @1.first_column); }
+;
+
+CONTROLELSE
+  : RELSE STATEMENT { $$ = $2; }
+  | RELSE CONTROLIF { $$ = $2; }
+  | { $$ = null; }
+;
+
 EXPRESION
   : PRIMITIVO       { $$ = $1; }
   | ACCEDERVAR      { $$ = $1; }
   | ARITMETICA      { $$ = $1; }
+  | RELACIONALES  { $$ = $1; }
 
 ;
 
@@ -157,6 +194,11 @@ ARITMETICA
   : EXPRESION MAS EXPRESION     { $$ = new Aritmetica($1,$3,TipoAritmetica.SUMA,@1.first_line, @1.first_column); }
   | EXPRESION MENOS EXPRESION   { $$ = new Aritmetica($1,$3,TipoAritmetica.RESTA,@1.first_line, @1.first_column); }
   | MENOS EXPRESION %prec UMENOS { $$ = new Aritmetica($2,$2,TipoAritmetica.UMENOS,@1.first_line, @1.first_column); }  
+;
+
+RELACIONALES
+  : EXPRESION MENORQUE EXPRESION     { $$ = new Relacional($1,$3,TipoRelacional.MENORQUE,@1.first_line, @1.first_column); }
+  | EXPRESION MAYORQUE EXPRESION     { $$ = new Relacional($1,$3,TipoRelacional.MAYORQUE,@1.first_line, @1.first_column); }
 ;
 
 ACCEDERVAR

@@ -20,13 +20,13 @@ export class Print extends Instruction {
 
   public drawAst(): { rama: string; nodo: string; } {
     const id = Math.floor(Math.random() * (100-0)+0);
-    const nodoPrincipal=  `nodoPrint${id.toString()}`;
-    let ramaPrint= `${nodoPrincipal}[label="Print"];\n`;
-    const codigoRama:{rama:string, nodo:string}= this.expression.drawAst();
+    const nodoPrincipal = `nodoPrint${id.toString()}`;
+    let ramaPrint = `${nodoPrincipal}[label="Print"];\n`
+    const codigoRama:{rama:string, nodo:string} = this.expression.drawAst();
     ramaPrint += codigoRama.rama;
+    ramaPrint += `${nodoPrincipal} -> ${codigoRama.nodo};\n`
+    return {rama:ramaPrint, nodo:nodoPrincipal};
+  }
 
-    ramaPrint+= `${nodoPrincipal}->${codigoRama.nodo};\n`;
-
-    return {rama:ramaPrint,nodo:nodoPrincipal};
- }
 }
+

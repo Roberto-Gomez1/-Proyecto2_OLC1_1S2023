@@ -14,7 +14,7 @@ export class LlamadaFuncion extends Expression {
             if (funcion.parametros.length == this.argumentos.length) {
               for (let i = 0; i < funcion.parametros.length; i++) {
                 const valor = this.argumentos[i].execute(env);
-                const param = funcion.parametros[i].execute(env);
+                const param = funcion.parametros[i].execute(env); 
                 if (valor.type == param.type) {
                   envFun.guardar(param.value, valor.value, valor.type, this.line, this.column);
                 } else {
@@ -30,8 +30,8 @@ export class LlamadaFuncion extends Expression {
             console.log("Error, La funcion " + this.id + " no existe, linea " + this.line + " y columna " + this.column);
           }
     }
-    
+
     public drawAst(): { rama: string; nodo: string; } {
-      return {rama:"",nodo:""};
-  }
+      return {rama:"", nodo:""};
+    }
 }

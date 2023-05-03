@@ -10,7 +10,7 @@ const options: cors.CorsOptions = {
   origin: allowedOrigins
 }
 app.use(cors(options));
-app.use(express.json()); // middleware parse request body to json
+app.use(express.json());
 
 const PORT = 5000;
 

@@ -16,12 +16,13 @@ export class Statement extends Instruction {
                     return ret;
                 }
             }catch(e){
-                console.log("Error al ejecutar instrucciones")
+                console.log("Errro al ejecutar instrucciones")
             }
         }
     }
 
     public drawAst(): { rama: string; nodo: string; } {
-        return {rama:"",nodo:''};
-     }
+        return {rama:"", nodo:""};
+      
+    }
 }

@@ -17,42 +17,46 @@ class InterpreteController {
     console.log("Codigo de entrada:  " + text);
 
     try {
-      const ast = parser.parse(text);
+      const ast = parser.parse(text); 
       try {
         printlist.splice(0, printlist.length);
         
         const globalEnv = new Environment(null);
 
         /*for (const inst of ast){
+          if(inst instanceof Declarar){
             inst.execute(globalEnv);
-        }*/
-
-        for(const inst of ast){
-          if(inst instanceof Funcion){
-            console.log("Funcion encontrada");
-            inst.execute(globalEnv);
-          }else if(inst instanceof Declarar){
+          }else if(inst instanceof Funcion){
             inst.execute(globalEnv);
           }
-        }
+        }*/
+        
 
-        for(const inst of ast){
+        // seguna pasada para el main
+        /*for (const inst of ast){
           if(inst instanceof Main){
             inst.execute(globalEnv);
           }
-        }
+        }*/
         
-        let drawast=`
-        digraph G{
-          nodoPrincipal[label="AST"];\n
-        `;
-        
-        for(const inst of ast){
-          const dAst = inst.drawAst();
-          drawast+=`${dAst.rama}\n`;
-          drawast += `nodoPrincipal -> ${dAst.nodo};`;
+        for (const inst of ast){
+            inst.execute(globalEnv);
         }
-        drawast+="\n}";
+
+          
+          let drawast = `
+          digraph G{
+              nodoPrincipal[label="AST"];\n
+          `;
+          for (const inst of ast) {
+            const dAst = inst.drawAst();
+            drawast += `${dAst.rama}\n`;
+            drawast += `nodoPrincipal -> ${dAst.nodo};`;
+          }
+
+          drawast += "\n}";
+
+
         res.json({ consola:printlist.join("\n"), errores: "ninguno", ast: drawast });
 
       } catch (error) {

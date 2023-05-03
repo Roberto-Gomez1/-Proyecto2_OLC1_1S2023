@@ -37,7 +37,7 @@ export class Aritmetica extends Expression {
           }
           return { value: op1.value + op2.value, type: Type.INT };
       }
-    } 
+    }
     else if(this.tipoOperacion == TipoAritmetica.RESTA){
       const op1 = this.izquierdo.execute(env);
       const op2 = this.derecho.execute(env);
@@ -73,6 +73,6 @@ export class Aritmetica extends Expression {
   }
 
   public drawAst(): { rama: string; nodo: string; } {
-    return {rama:"",nodo:""};
-}
+    return {rama:"", nodo:""};
+  }
 }
