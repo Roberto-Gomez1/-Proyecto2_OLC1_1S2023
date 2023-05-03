@@ -71,4 +71,8 @@ export class Aritmetica extends Expression {
     }
     return { value: null, type: Type.NULL };
   }
+
+  public drawAst(): { rama: string; nodo: string; } {
+    return {rama:"",nodo:""};
+}
 }

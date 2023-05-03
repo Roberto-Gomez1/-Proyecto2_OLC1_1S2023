@@ -31,4 +31,14 @@ export class Primitivo extends Expression {
   }
 
 }
+  public drawAst(): { rama: string; nodo: string; } {
+    const id = Math.floor(Math.random() * (100-0)+0);
+    const nodoPrincipal=  `nodoPrint${id.toString()}`;
+    const ramaPrimitivo= `${nodoPrincipal}[label="Primitivo"];\n
+    nodoPrimitivo${nodoPrincipal}[label="${this.value.toString()}"];\n
+    ${nodoPrincipal} -> nodoPrimitivo${nodoPrincipal};\n`;
+
+    return {rama:ramaPrimitivo,nodo:nodoPrincipal};
+  }
+
 }

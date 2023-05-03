@@ -12,5 +12,8 @@ export class Funcion extends Instruction{
     public execute(env: Environment) {
         env.guardarFuncion(this.id,this);
     }
+    public drawAst(): { rama: string; nodo: string; } {
+        return {rama:"",nodo:''};
+     }
     
 }

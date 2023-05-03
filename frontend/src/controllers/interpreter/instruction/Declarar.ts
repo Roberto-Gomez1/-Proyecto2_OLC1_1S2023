@@ -26,5 +26,26 @@ export class Declarar extends Instruction {
     }
   }
 
+  public drawAst(): { rama: string; nodo: string; } {
+    const id = Math.floor(Math.random() * (100 - 0) + 0);
+    const nodoPrincipal = `nodoDeclarar${id.toString()}`;
+    const nodoIdPrincipal = `nodoId${id.toString()}`;
+    if (this.valor != null) {
+      const codigoAST:{rama:string, nodo:string} = this.valor.drawAst();
+      let ramaDeclarar = `${nodoPrincipal}[label="Declarar"];\n `;
+      ramaDeclarar += `${nodoIdPrincipal}[label="${this.id.toString()}"];\n`;
+      ramaDeclarar += codigoAST.rama+ "\n";
+      ramaDeclarar += `${nodoPrincipal} -> ${nodoIdPrincipal};\n`;
+      ramaDeclarar += `${nodoIdPrincipal} -> ${codigoAST.nodo};\n`;
+      return { rama: ramaDeclarar, nodo: nodoPrincipal };
+
+    }else {
+      let ramaDeclarar = `${nodoPrincipal}[label="Declarar"];\n `;
+      ramaDeclarar += `${nodoIdPrincipal}[label="${this.id.toString()}"];\n`;
+      ramaDeclarar += `${nodoPrincipal} -> ${nodoIdPrincipal};\n`;
+      return { rama: ramaDeclarar, nodo: nodoPrincipal };
+    }
+  }
+
 
 }
