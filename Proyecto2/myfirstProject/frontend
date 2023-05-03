@@ -1,0 +1,9 @@
+
+        <table border=1 style="width: 75%;margin: 0 auto;" cellpadding ="5">
+            <tr>
+                <th>Tipo error</th>
+                <th>Descripcion</th>
+                <th>Linea</th>
+                <th>Columna</th>
+            </tr><tr><td>Lexico</td><td>No se reconoce el caracter @</td><td>2</td><td>1</td></tr><tr><td>Lexico</td><td>No se reconoce el caracter @</td><td>2</td><td>2</td></tr><tr><td>Lexico</td><td>No se reconoce el caracter @</td><td>2</td><td>3</td></tr>
+        </table>

@@ -1,0 +1,290 @@
+INIT :  LISTAINSTRUCCIONES  EOF
+;
+
+LISTAINSTRUCCIONES: LISTAINSTRUCCIONES INSTRUCCION
+                |  INSTRUCCION
+
+INSTRUCCION :
+    DECLARACIONES 
+    | ASIGNACIONES 
+    | 
+    | DECREMENTO 
+    | ENCAPSULAMIENTO 
+    | VECTORES 
+    | OTERNARIO 
+    | IF 
+    | SWITCH 
+    | WHILE 
+    | FOR 
+    | DOWHILE 
+    | DOUNTIL 
+    | BREAK 
+    | CONTINUE 
+    | RETURN 
+    | FUNCIONES 
+    | METODO  
+    | EJECUTAR 
+    | PRINT 
+    | PRINTLN 
+    | TOLOWER 
+    | TOUPPER 
+    | ROUND 
+    | LENGTH 
+    | TYPEOF 
+    | TOSTRING 
+    | TOCHARARRAY 
+    | PUSH 
+    | POP 
+    | RUN 
+    | error
+
+
+DECLARACIONES:  TIPOS EXID '=' OPERACIONA ';' 
+    | TIPOS EXID '=' 'cadena' ';' 
+    | TIPOS EXID '=' 'char' ';' 
+    | TIPOS EXID '=' 'bool' ';' 
+    | TIPOS EXID ';'
+
+
+EXID: EXID ',' 'expreID'
+        | 'expreID' 
+
+ASIGNACIONES: EXID '=' OPERACIONA ';'  
+        | EXID '=' 'cadena' ';'  
+        | EXID '=' 'bool' ';'  
+        | EXID '=' 'char' ';'  
+        | EXID '=' EXID ';'
+
+OPERACIONA: OPERACIONA EXPRESIONES 
+        | EXPRESIONES 
+
+EXPRESIONES: EXPRESION 
+        | RELACIONAL 
+        | LOGICO 
+
+EXPRESION: EXPRESION '+' EXPRESION
+            | EXPRESION '-' EXPRESION 
+            | EXPRESION '*' EXPRESION  
+            | EXPRESION '/' EXPRESION 
+            | EXPRESION '^' EXPRESION 
+            | EXPRESION '%' EXPRESION 
+            | EXPRESION ':' EXPRESION 
+            | EXPRESION '?' EXPRESION 
+            | '(' EXPRESION ')' 
+            | '[' EXPRESION ']'
+            | 'numero' 
+
+RELACIONAL: EXPRESION '>' EXPRESION  
+        | EXPRESION '<' EXPRESION  
+        | EXPRESION '>=' EXPRESION   
+        | EXPRESION '<=' EXPRESION 
+        | EXPRESION '==' EXPRESION 
+        | EXPRESION '!=' EXPRESION 
+;
+
+LOGICO: EXPRESION '|' EXPRESION
+        | EXPRESION '&&' EXPRESION 
+        | '!' EXPRESION 
+
+CASTEO: TIPOS EXID '=' '(' TIPOS ')' OPERACIONA ';' 
+        | TIPOS EXID '=' '(' TIPOS ')' 'cadena' ';' 
+        | TIPOS EXID '=' '(' TIPOS ')' 'char' ';' 
+        | TIPOS EXID '=' '(' TIPOS ')' 'bool' ';' 
+
+
+INCREMENTO: 'expreID' '++' ';' 
+        | '++' 'expreID' ';'  
+
+DECREMENTO: 'expreID' '--' ';'  
+        | '--' 'expreID' ';'
+
+
+ENCAPSULAMIENTO: 'INSTRUCCIONES '}' 
+                | 'cadena' ',' 'cadena' '}' 
+
+VECTORES: DECLARARVECTOR 
+        | DECLARARVECTOR2 
+        | ACCESOVECTOR 
+        | MODIFICARVECTOR 
+
+DECLARARVECTOR: TIPOS '[' ']' EXID '=' 'pr_new' TIPOS '[' 'numero' ']' ';'  
+        | TIPOS '[' ']' '[' ']' EXID '=' 'pr_new' TIPOS '[' '(' TIPOS ')' 'cadena' ']' '[' 'numero' ']' ';'
+        | TIPOS '[' ']' '[' ']' EXID '=' 'pr_new' TIPOS '[' 'numero' ']' '[' 'numero' ']' ';' 
+
+DECLARARVECTOR2: TIPOS '[' ']' EXID '='  'VALORES '}' ';'  
+        | TIPOS '[' ']' '[' ']' EXID '=' 'VALORES '}' ',' 'VALORES '}' '}' ';'  
+
+
+ACCESOVECTOR: TIPOS EXID '=' 'expreID' '[' 'numero' ']' ';'
+        | TIPOS EXID '=' 'expreID' '[' 'numero' ']' '[' 'numero' ']' ';'         
+
+
+MODIFICARVECTOR: EXID '[' 'numero' ']' '=' 'cadena' ';' 
+        | EXID '[' 'numero' ']'  '=' 'cadena' '+' 'expreID' '[' 'numero' ']' ';' 
+
+TIPOS: 'pr_int' 
+    |'pr_char' 
+    |'pr_string' 
+    | 'pr_bool' 
+    | 'pr_double'
+
+LISTAVALORES: 'cadena' ',' 'cadena' LISTAVALORES   ',' 
+            | 'numero' ',' 'numero' LISTAVALORES  ',' 
+            | 'numero' ',' 'numero'  ',' 
+            | 'cadena' , 'cadena'  ',' 
+
+
+OTERNARIO: EXID '=' EXID '>' 'numero' '?' 'bool' ':' 'bool' ';'  
+        | EXID '=' EXID '>' 'char' '?' 'bool' ':' 'bool' ';'  
+        | EXID '=' EXID '>' 'char' '?' 'numero' ':' 'numero' ';'  
+        | EXID '=' EXID '>' 'char' '?' 'cadena' ':' 'cadena' ';'  
+
+
+
+IF: 'pr_if' '(' CONDICIONIF ')' 'INSTRUCCIONES '}'
+    | 'pr_if' '(' CONDICIONIF ')' 'INSTRUCCIONES '}' 'pr_else' 'INSTRUCCIONES '}'
+    | 'pr_if' '(' CONDICIONIF ')' 'INSTRUCCIONES '}' LISTAELIF 'pr_else' 'INSTRUCCIONES '}'
+
+LISTAELIF: 'pr_elif' '(' CONDICIONIF ')' 'INSTRUCCIONES '}' LISTAELIF 
+        | 'pr_elif' '(' CONDICIONIF ')' 'INSTRUCCIONES '}' 
+
+
+CONDICIONIF: 'expreID' OPERAD 'numero'  
+        | 'expreID' OPERAD 'cadena'  
+        | 'expreID' OPERAD 'caracter'  
+        | 'expreID' OPERAD 'bool'  
+        | 'cadena' OPERAD 'cadena'  
+        | 'cadena' OPERAD 'numero'  
+        | 'cadena' OPERAD 'caracter'  
+        | 'cadena' OPERAD 'bool'  
+        | 'expreID' OPERAD 'numero' '&&' 'expreID' OPERAD 'numero'  
+        | 'expreID' OPERAD 'cadena' '+' 'cadena' 
+        | 'expreID' OPERAD 'cadena' OPERACIONA  
+
+OPERAD: '<' 
+        | '>' 
+        | '<=' 
+        | '>=' 
+        | "==" 
+        | "!=" 
+
+
+SWITCH: 'pr_switch' '(' EXID ')' 'CASE '}'
+
+
+
+LISTACASE: 'pr_case' 'numero' ':' LISTAINSTRUCCIONES LISTACASE
+        | 'pr_case' 'numero' ':' LISTAINSTRUCCIONES
+        | 'pr_default' ':' LISTAINSTRUCCIONES 
+
+
+WHILE: 'pr_while' '(' CONDICIONIF ')' 'INSTRUCCIONES '}'
+;
+
+FOR: 'pr_for' '(' TIPOS 'expreID' '=' OPERACIONA ';' 'expreID' OPERAD OPERACIONA ';' 'expreID' '+' '+' ')' 'INSTRUCCIONES '}'
+        | 'pr_for' '(' 'expreID' '=' OPERACIONA ';' 'expreID' OPERAD OPERACIONA ';' 'expreID' '=' EXPRESIONES ')' 'INSTRUCCIONES '}'
+
+DOWHILE: 'pr_do' 'INSTRUCCIONES '}' 'pr_while' '(' CONDICIONIF ')' ';'
+        | 'pr_do' 'INSTRUCCIONES '}' 'pr_while' '(' OPERACIONA ')' ';'
+
+DOUNTIL: 'pr_do' 'INSTRUCCIONES '}' 'pr_until' '(' CONDICIONIF ')' ';'
+        | 'pr_do' 'INSTRUCCIONES '}' 'pr_until' '(' OPERACIONA ')' ';'
+
+BREAK: 'pr_break' ';'
+
+CONTINUE: 'pr_continue' ';' 
+
+RETURN: 'pr_return' ';' 
+    | 'pr_return' OPERACIONA ';' 
+    | 'pr_return' EXID ';' 
+    | 'pr_return' 'cadena' 
+
+
+FUNCIONES: EXID '(' LISTAPARAMETROS ')' ':' TIPOS 'INSTRUCCIONES '}' 
+        | EXID '(' ')' ':' TIPOS 'INSTRUCCIONES '}'
+
+LISTAPARAMETROS: TIPOS 'expreID'
+                | LISTAPARAMETROS ',' TIPOS 'expreID'
+
+METODO: EXID '(' ')' ':' 'pr_void' 'INSTRUCCIONES '}'
+        | EXID '(' ')' 'INSTRUCCIONES '}'
+        | EXID '(' LISTAPARAMETROS ')' ':' 'pr_void' 'INSTRUCCIONES '}'
+        | EXID '(' LISTAPARAMETROS ')' 'INSTRUCCIONES '}'        
+
+
+EJECUTAR: EXID '(' ')' ';'
+        | EXID '(' OPERACIONA ')' ';'  
+
+
+PRINT: 'pr_print' '(' 'cadena' ')' ';'  
+    | 'pr_print' '(' 'expreID' ')' ';'  
+    | 'pr_print' '(' 'cadena' ')' '+' 'expreID' ';'  
+    | 'pr_print' '(' 'expreID' ')' '+' 'expreID' ';'  
+    | 'pr_print' '(' 'cadena' ')' '+' OPERACIONA ';'  
+    | 'pr_print' '(' 'expreID' ')' '+' OPERACIONA ';'  
+
+PRINTLN: 'pr_println' '(' 'cadena' ')' ';'  
+    | 'pr_println' '(' 'expreID' ')' ';'  
+    | 'pr_println' '(' 'cadena' ')' '+' 'expreID' ';'
+    | 'pr_println' '(' 'expreID' ')' '+' 'expreID' ';'  
+    | 'pr_println' '(' 'cadena' ')' '+' 'numero' ';'  
+    | 'pr_println' '(' 'expreID' ')' '+' 'numero' ';'  
+    | 'pr_println' '(' 'expreID' '+' OPERACIONA ')' ';'  
+    | 'pr_println' '(' 'cadena' '+' OPERACIONA ')' ';'  
+    | 'pr_println' '(' 'cadena' '+' 'expreID' '+' 'cadena' ')' ';'  
+    | 'pr_println' '(' 'expreID' '+' 'expreID' '+' 'cadena' ')' ';'  
+    | 'pr_println' '(' 'expreID' '+' 'cadena' '+' 'expreID' ')' ';' 
+
+TOLOWER: TIPOS EXID '=' 'pr_tolower' '(' 'cadena' ')' ';'
+        | TIPOS EXID '=' 'pr_tolower' '(' PRUEBA ')' ';'  
+
+TOUPPER: TIPOS EXID '=' 'pr_toupper' '(' 'cadena' ')' ';' 
+        | TIPOS EXID '=' 'pr_toupper' '(' 'cadena' '+' 'numero' ')' ';'  
+        | EXID '=' 'pr_toupper' '(' 'cadena' ')' ';' 
+        | EXID '=' 'pr_toupper' '(' 'cadena' '+' OPERACIONA ')' ';' 
+
+ROUND: TIPOS EXID '=' 'pr_round' '(' OPERACIONA ')' ';'  
+    | EXID '=' 'pr_round' '(' OPERACIONA ')' ';'  
+
+
+LENGTH:  TIPOS EXID '=' 'pr_length' '(' EXID ')' ';'  
+        | TIPOS EXID '=' 'pr_length' '(' EXID '[' 'numero' ']' ')' ';'
+        |'pr_length' '(' 'expreID' ')' ';' 
+
+TYPEOF: 'pr_typeof' '(' OPERACIONA ')' ';'
+        |TIPOS EXID '=' 'pr_typeof' '(' 'numero' ')' ';'   
+        |TIPOS EXID '=' 'pr_typeof' '(' 'cadena' ')' ';'   
+        |TIPOS EXID '=' 'pr_typeof' '(' 'bool' ')' ';'   
+        |TIPOS EXID '=' 'pr_typeof' '(' 'caracter' ')' ';'   
+        |TIPOS EXID '=' 'pr_typeof' '(' EXID ')' ';' 
+
+TOSTRING: 'pr_tostring' '(' 'numero' ')' ';' 
+        |TIPOS EXID '=' 'pr_tostring' '(' OPERACIONA ')' ';'  
+        |TIPOS EXID '=' 'pr_tostring' '(' EXID ')' ';'  
+        |TIPOS EXID '=' 'pr_tostring' '(' 'cadena' ')' ';'  
+        |TIPOS EXID '=' 'pr_tostring' '(' 'caracter' ')' ';'  
+        |TIPOS EXID '=' 'pr_tostring' '(' 'bool' ')' ';'  
+
+TOCHARARRAY: 'pr_tochararray' '(' OPERACIONA ')' ';'
+        |TIPOS '[' ']' EXID '=' 'pr_tochararray' '(' OPERACIONA ')' ';'  
+        |TIPOS '[' ']' EXID '=' 'pr_tochararray' '(' EXID ')' ';'  
+        |TIPOS '[' ']' EXID '=' 'pr_tochararray' '(' 'cadena' ')' ';'  
+        |TIPOS '[' ']' EXID '=' 'pr_tochararray' '(' 'caracter' ')' ';'  
+        |TIPOS '[' ']' EXID '=' 'pr_tochararray' '(' 'bool' ')' ';'  
+
+
+PUSH: EXID '.' 'pr_push' '(' OPERACIONA ')' ';'  
+    | EXID '.' 'pr_push' '(' 'cadena' ')' ';'  
+    | EXID '.' 'pr_push' '(' 'caracter' ')' ';'  
+    | EXID '.' 'pr_push' '(' ')' ';'  
+
+POP: EXID '.' 'pr_pop' '(' OPERACIONA ')' ';'
+    | EXID '.' 'pr_pop' '(' 'cadena' ')' ';' 
+    | EXID '.' 'pr_pop' '(' 'caracter' ')' ';'
+    | EXID '.' 'pr_pop' '(' ')' ';' 
+;
+
+RUN: 'pr_run' EXID '(' ')' ';' 
+    | 'pr_run' EXID '(' OPERACIONA ')' ';' 
+    | 'pr_run' EXID '(' 'cadena' ')' ';' 
+    | 'pr_run' EXID '(' 'caracter' ')' ';' 

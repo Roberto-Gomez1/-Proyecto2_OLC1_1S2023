@@ -1,0 +1,20 @@
+// Este es un comentario de una línea
+/*
+Este es un comentario Multilínea Para este lenguaje
+*/
+@@
+//int = 10;
+
+//int a = "prueba\nnotro";
+//string dos = "C:\\usuario\\Personal";
+
+//sting prueba = "\"Esto es una cadena doble\"";
+
+//string ddd = "\tAqui hay una tabulacion" ;
+
+string desc = "\'Son comillas simples\'";
+
+//int prueba, prueba2, otro2;
+
+//string salida1, salidaaaa;
+

@@ -23,6 +23,14 @@ export class Relacional extends Expression {
             return { value: op1.value > op2.value, type: Type.BOOLEAN };
         case TipoRelacional.MENORQUE:
             return { value: op1.value < op2.value, type: Type.BOOLEAN };
+        case TipoRelacional.MAYORIGUAL:
+            return { value: op1.value >= op2.value, type: Type.BOOLEAN };
+        case TipoRelacional.MENORIGUAL:
+            return { value: op1.value <= op2.value, type: Type.BOOLEAN };
+        case TipoRelacional.IGUALIGUAL:
+            return { value: op1.value == op2.value, type: Type.BOOLEAN };
+        case TipoRelacional.DIFERENTE:
+            return { value: op1.value != op2.value, type: Type.BOOLEAN };
         default:
             return { value: null, type: Type.NULL };
     }

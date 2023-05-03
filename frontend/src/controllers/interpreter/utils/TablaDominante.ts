@@ -16,3 +16,34 @@ export const TablaResta = [
     [ Type.NULL , Type.NULL , Type.NULL , Type.NULL , Type.NULL]
   ]
   
+export const TablaMultiplicacion = [
+    [Type.INT , Type.DOUBLE , Type.NULL , Type.INT ,  Type.NULL],
+    [Type.DOUBLE , Type.DOUBLE , Type.NULL , Type.DOUBLE , Type.NULL],
+    [Type.NULL , Type.NULL , Type.NULL , Type.NULL , Type.NULL],
+    [Type.INT , Type.DOUBLE ,  Type.NULL , Type.NULL , Type.NULL],
+    [ Type.NULL , Type.NULL , Type.NULL , Type.NULL , Type.NULL]
+  ]
+
+export const TablaDivision = [
+    [Type.DOUBLE , Type.DOUBLE , Type.NULL , Type.DOUBLE ,  Type.NULL],
+    [Type.DOUBLE , Type.DOUBLE , Type.NULL , Type.DOUBLE , Type.NULL],
+    [Type.NULL , Type.NULL , Type.NULL , Type.NULL , Type.NULL],
+    [Type.DOUBLE , Type.DOUBLE ,  Type.NULL , Type.NULL , Type.NULL],
+    [ Type.NULL , Type.NULL , Type.NULL , Type.NULL , Type.NULL]
+  ]
+
+  export const TablaPotencia = [
+    [Type.INT , Type.DOUBLE , Type.NULL , Type.NULL ,  Type.NULL],
+    [Type.DOUBLE , Type.DOUBLE , Type.NULL , Type.NULL , Type.NULL],
+    [Type.NULL , Type.NULL , Type.NULL , Type.NULL , Type.NULL],
+    [Type.NULL , Type.NULL ,  Type.NULL , Type.NULL , Type.NULL],
+    [ Type.NULL , Type.NULL , Type.NULL , Type.NULL , Type.NULL]
+  ]
+
+  export const TablaModulo = [
+    [Type.DOUBLE , Type.DOUBLE , Type.NULL , Type.NULL ,  Type.NULL],
+    [Type.DOUBLE , Type.DOUBLE , Type.NULL , Type.NULL , Type.NULL],
+    [Type.NULL , Type.NULL , Type.NULL , Type.NULL , Type.NULL],
+    [Type.NULL , Type.NULL ,  Type.NULL , Type.NULL , Type.NULL],
+    [ Type.NULL , Type.NULL , Type.NULL , Type.NULL , Type.NULL]
+  ]

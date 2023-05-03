@@ -1,0 +1,11 @@
+/**
+
+    Organizacion de lenguajes y compiladores 1 
+    Segundo semestre 2022
+    Universidad San Carlos de Guatemala
+
+****/
+
+//Seccion de declaraciones
+
+int varible_1;

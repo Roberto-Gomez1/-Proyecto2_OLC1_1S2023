@@ -1,7 +1,9 @@
 export enum TipoRelacional {
     MAYORQUE,
     MENORQUE,
-    MAYORIGUALQUE,
-    MENORIGUALQUE
+    MAYORIGUAL,
+    MENORIGUAL,
+    IGUALIGUAL,
+    DIFERENTE
   }
   

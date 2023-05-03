@@ -5,6 +5,10 @@
 %x string
 
 %%
+[ \r\t]+            {}                      // espacio en blanco
+\n                  {}                      // salto
+(\/\/).*                             {}     // comentario linea
+[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]  {}     // comentario multilinea
 
 
 ";"                 return 'PTCOMA';
@@ -18,9 +22,10 @@
 "{"                 return 'LLAVEIZQ';
 "}"                 return "LLAVEDER";
 "?"                 return 'KLEENE';
+"=="                return 'IGUALIGUAL';
 "="                 return 'IGUAL';
 
-"print"             return 'RPRIN';   // funcion de imprimir
+"print"             return 'RPRIN';
 "true"              return 'TRUE';
 "false"             return 'FALSE';
 "for"               return 'RFOR';
@@ -34,8 +39,11 @@
 "/"                 return 'DIVISION';
 "^"                 return 'POTENCIA';
 "%"                 return 'MODULO';
-"<"                 return 'MENORQUE';
+">="                return 'MAYORIGUAL';
+"<="                return 'MENORIGUAL';
 ">"                 return 'MAYORQUE';
+"<"                 return 'MENORQUE';
+"!="                return 'DIFERENTE';
 
 
 
@@ -47,10 +55,6 @@
 
 
 
-[ \r\t]+            {}                      // espacio en blanco
-\n                  {}                      // salto
-(\/\/).*                             {}     // comentario linea
-[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]  {}     // comentario multilinea
 
 [a-zA-Z][a-zA-Z0-9_]*   return 'ID';
 [0-9]+("."[0-9]+)\b     return 'DECIMAL';
@@ -89,14 +93,15 @@
   const {OperacionesUnarios} = require('./expression/OperacionesUnarios');
   const {For} = require('./instruction/For');
   const {If} = require('./instruction/If');
+  const {Ternario} = require('./expression/Ternario');
 
 
 %}
 
-
-%left 'MENORQUE' 'MAYORQUE'
+%left 'KLEENE' 'DOSPUNTOS'
+%left 'MENORQUE' 'MAYORQUE' 'MENORIGUAL' 'MAYORIGUAL' 'IGUALIGUAL' 'DIFERENTE'
 %left 'MAS' 'MENOS'
-%left 'POR' 'DIVISION' 'MODULO'
+%left 'POR' 'DIVISION' 'MODULO' 'POTENCIA'
 %right 'UMENOS '
 
 %start INICIO
@@ -175,8 +180,8 @@ EXPRESION
   : PRIMITIVO       { $$ = $1; }
   | ACCEDERVAR      { $$ = $1; }
   | ARITMETICA      { $$ = $1; }
-  | RELACIONALES  { $$ = $1; }
-
+  | RELACIONALES    { $$ = $1; }
+  | TERNARIO        { $$ = $1; }
 ;
 
 LLAMADAFUNCION
@@ -193,13 +198,25 @@ ARGUMENTOS
 ARITMETICA
   : EXPRESION MAS EXPRESION     { $$ = new Aritmetica($1,$3,TipoAritmetica.SUMA,@1.first_line, @1.first_column); }
   | EXPRESION MENOS EXPRESION   { $$ = new Aritmetica($1,$3,TipoAritmetica.RESTA,@1.first_line, @1.first_column); }
+  | EXPRESION POR EXPRESION     { $$ = new Aritmetica($1,$3,TipoAritmetica.MULTIPLICACION,@1.first_line, @1.first_column); }
+  | EXPRESION DIVISION EXPRESION     { $$ = new Aritmetica($1,$3,TipoAritmetica.DIVISION,@1.first_line, @1.first_column); }
+  | EXPRESION MODULO EXPRESION     { $$ = new Aritmetica($1,$3,TipoAritmetica.MODULO,@1.first_line, @1.first_column); }
+  | EXPRESION POTENCIA EXPRESION     { $$ = new Aritmetica($1,$3,TipoAritmetica.POTENCIA,@1.first_line, @1.first_column); }
   | MENOS EXPRESION %prec UMENOS { $$ = new Aritmetica($2,$2,TipoAritmetica.UMENOS,@1.first_line, @1.first_column); }  
 ;
 
 RELACIONALES
   : EXPRESION MENORQUE EXPRESION     { $$ = new Relacional($1,$3,TipoRelacional.MENORQUE,@1.first_line, @1.first_column); }
   | EXPRESION MAYORQUE EXPRESION     { $$ = new Relacional($1,$3,TipoRelacional.MAYORQUE,@1.first_line, @1.first_column); }
+  | EXPRESION MENORIGUAL EXPRESION     { $$ = new Relacional($1,$3,TipoRelacional.MENORIGUAL,@1.first_line, @1.first_column); }
+  | EXPRESION MAYORIGUAL EXPRESION     { $$ = new Relacional($1,$3,TipoRelacional.MAYORIGUAL,@1.first_line, @1.first_column); }
+  | EXPRESION IGUALIGUAL EXPRESION     { $$ = new Relacional($1,$3,TipoRelacional.IGUALIGUAL,@1.first_line, @1.first_column); }
+  | EXPRESION DIFERENTE EXPRESION     { $$ = new Relacional($1,$3,TipoRelacional.DIFERENTE,@1.first_line, @1.first_column); }
 ;
+
+TERNARIO
+  :EXPRESION KLEENE EXPRESION DOSPUNTOS EXPRESION { $$ = new Ternario($1,$3,$5,@1.first_line, @1.first_column); }
+  ;
 
 ACCEDERVAR
   : ID              { $$ = new Acceso($1,@1.first_line, @1.first_column); }
