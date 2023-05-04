@@ -10,6 +10,7 @@ export enum Type{
   CONTINUE = 8,
   ARRAY = 9,
   VECTOR = 10,
+  VOID = 11,
 }
 
 

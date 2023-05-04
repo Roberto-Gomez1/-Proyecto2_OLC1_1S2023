@@ -3,6 +3,8 @@ import { Type } from "./Return";
 import { printlist } from "../Reports/PrintList";
 import { Funcion } from "../instruction/Funcion";
 import { ListaTabla,TablaSimbolos } from "../Reports/TablaSimbolos";
+import { Instruction } from "./Instruction";
+import { Declarar } from "../instruction/Declarar";
 
 export class Environment {
     private variables = new Map<string, Simbolo>();   //  mapa de variables
@@ -47,6 +49,12 @@ export class Environment {
       }  
       return null;  
     }
+    public saveVar(nombre: string, valor: any, type: Type,ins:Array<Instruction>|null,param:Array<Declarar>|null): boolean {
+      if(!this.getVar(nombre)){
+        return true
+      }
+      return false
+  }
 
   public guardarFuncion(id: string, funcion: Funcion) {
     let env: Environment | null = this;

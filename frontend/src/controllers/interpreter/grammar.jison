@@ -62,8 +62,12 @@
 "double"               return 'RDOUBLE';
 "new"               return 'RNEW';
 "list"               return 'RLIST';
-
-
+"void"               return 'RVOID';
+"main"               return 'RMAIN';
+"return"        return 'RRETURN';
+"break"      return 'RBREAK';
+"continue"      return 'RCONTINUE';
+"do"      return 'RDO';
 
 [a-zA-Z][a-zA-Z0-9_]*   return 'ID';
 [0-9]+("."[0-9]+)\b     return 'DECIMAL';
@@ -109,8 +113,10 @@
   const {Casteo} = require('./expression/Casteo');
   const {Switch} = require('./instruction/Switch');
   const {Case} = require('./instruction/Case');
-  const {While} = require('./instruction/While');
+  const {cicloWhile} = require('./instruction/While');
   const {Modificar} =require('./instruction/Modificar');
+  const {DeclararV} = require('./instruction/DeclararV');
+  const {cicloDo} = require('./instruction/Do');
 %}
 
 
@@ -143,6 +149,7 @@ INSTRUCCION
   | GUARDARFUNCION         { $$ = $1; }
   | FOR   { $$ = $1; }
   | MODIFICAR  { $$ = $1; }
+  | DOWHILE  { $$ = $1; }
   | WHILE   { $$ = $1; }
   | CONTROLIF    { $$ = $1; }
   | CONTROLSWITCH   { $$ = $1; }
@@ -161,9 +168,9 @@ MODIFICAR
 DECLARAR
     : TIPO ID   { $$ = new Declarar($2,$1,null,@1.first_line, @1.first_column ); }
     | TIPO ID IGUAL EXPRESION   { $$ = new Declarar($2,$1,$4,@1.first_line, @1.first_column ); }
-    /*| TIPO  CORIZR CORDER ID IGUAL RNEW TIPO CORIZ EXPRESION CORDER  { $$ = new Declarar($4,$1,$8,@1.first_line, @1.first_column ); }
-    | TIPO CORIZ CORDER ID IGUAL CORIZR EXPRESIONES CORDER { $$ = new Declarar($4,$1,$7,@1.first_line, @1.first_column ); }
-    | RLIST MENORQUE TIPO MAYORQUE ID IGUAL RNEW RLIST MENORQUE TIPO MAYORQUE { $$ = new Declarar($5,$2,$10,@1.first_line, @1.first_column ); }*/
+    | TIPO  CORIZR CORDER ID IGUAL RNEW TIPO CORIZ EXPRESION CORDER  { $$ = new DeclararV($4,$1,$9,null,null,null,0,@1.first_line, @1.first_column ); }
+    | TIPO CORIZ CORDER ID IGUAL CORIZR EXPRESIONES CORDER { $$ = new DeclararV($4,$1,null,null,$7,null,1,@1.first_line, @1.first_column ); }
+    | RLIST MENORQUE TIPO MAYORQUE ID IGUAL RNEW RLIST MENORQUE TIPO MAYORQUE { $$ = new DeclararV($5,$3,$10,null,null,null,0,@1.first_line, @1.first_column ); }
 ;
 
 
@@ -191,8 +198,18 @@ FOR
   : RFOR PARIZQ DECLARAR PTCOMA EXPRESION PTCOMA OPERACIONESUNARIOS PARDER STATEMENT  { $$ = new For($3,$5,$7,$9,@1.first_line, @1.first_column); }
 ;
 
+DOWHILE
+: RDO LLAVEIZQ INSTRUCCIONES TRANSFERENCIA LLAVEDER RWHILE PARIZQ EXPRESION PARDER PTCOMA  { $$ = new cicloDo($3,$5,$9,@1.first_line, @1.first_column); }
+;
+
 WHILE
-: RWHILE PARIZQ EXPRESSION PARDER STATEMENT  { $$ = new While($3,$5,@1.first_line, @1.first_column); }
+: RWHILE PARIZQ EXPRESSION PARDER LLAVEIZQ INSTRUCCIONES TRANSFERENCIA LLAVEDER  { $$ = new While($3,$6,$7,@1.first_line, @1.first_column); }
+;
+
+TRANSFERENCIA
+    : RBREAK PTCOMA            {$$ = Type.BREAK}
+    | RCONTINUE PTCOMA         {$$ = Type.CONTINUE}
+    |                                {$$ = null}
 ;
 
 OPERACIONESUNARIOS
@@ -201,7 +218,7 @@ OPERACIONESUNARIOS
 ;
 
 CONTROLSWITCH
-: RSWITCH PARIZQ EXPRESION PARDER LLAVEIZQ CASELIST DEFAULT LLAVEDER { $$ = new Switch($3,$6,$7,@1.first_line, @1.first_column); }
+: RSWITCH PARIZQ EXPRESION PARDER LLAVEIZQ CASELIST DEFAULT LLAVEDER { $$ = new Switch($8,$3,$4,@1.first_line, @1.first_column); }
 ;
 
 CASELIST
@@ -231,12 +248,12 @@ CONTROLELSE
   | { $$ = null; }
 ;
 
-/*
+
 EXPRESIONES 
 : EXPRESIONES COMA EXPRESION { $1.push($3); $$ = $1; }
 | EXPRESION { $$ = [$1]; }
 ;
-*/
+
 
 EXPRESION
   : PRIMITIVO       { $$ = $1; }
@@ -321,4 +338,6 @@ TIPO
   | RSTRING         { $$ = Type.STRING; }
   | RCHAR           { $$ = Type.CHAR; }
   | RBOOLEAN        { $$ = Type.BOOLEAN; }
+  | RVOID           { $$ = Type.VOID; }
+  | RMAIN           { $$ = Type.MAIN; }
 ;

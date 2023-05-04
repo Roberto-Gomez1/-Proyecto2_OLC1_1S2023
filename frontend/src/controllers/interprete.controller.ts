@@ -23,13 +23,13 @@ class InterpreteController {
         
         const globalEnv = new Environment(null);
 
-        for (const inst of ast){
+        /*for (const inst of ast){
           if(inst instanceof Declarar){
             inst.execute(globalEnv);
           }else if(inst instanceof Funcion){
             inst.execute(globalEnv);
           }
-        }
+        }*/
         
 
         // seguna pasada para el main
@@ -39,9 +39,9 @@ class InterpreteController {
           }
         }*/
         
-        /*for (const inst of ast){
+        for (const inst of ast){
             inst.execute(globalEnv);
-        }*/
+        }
 
           
           let drawast = `

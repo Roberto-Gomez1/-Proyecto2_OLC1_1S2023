@@ -2,19 +2,24 @@ import { Environment } from "../abstract/Environment";
 import { Expression } from "../abstract/Expression";
 import { Instruction } from "../abstract/Instruction";
 import { Type } from "../abstract/Return";
-import { Statement } from "./Statement";
 
-export class cicloWhile extends Instruction{
-    constructor(private logic:Expression, private instruction: Array<Instruction>|null,public transfer: Type| null, line:number, column:number)
-    {
+export class cicloDo extends Instruction{
+
+    constructor(
+        public logic: Expression,
+        public instruction: Array<Instruction>|null,
+        public transfer: Type|null,
+        line: number,
+        column: number
+    ) {
         super(line, column);
     }
 
     public execute(env: Environment) {
         let logica = this.logic.execute(env)
-        const newEnv = new Environment(env);
+        const newEnv= new Environment(env)
         let aux;
-        while(logica.value){
+        do{
             if(this.instruction!=null)
                 for(const inst of this.instruction){
                     let t
@@ -35,11 +40,10 @@ export class cicloWhile extends Instruction{
                     continue
                 }
             }
-        }
+        }while(logica.value)
     }
 
     public drawAst(): { rama: string; nodo: string; } {
         return {rama:"", nodo: ""};
     }
-
 }
