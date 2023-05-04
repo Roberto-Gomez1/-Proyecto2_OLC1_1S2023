@@ -29,8 +29,13 @@
 "true"              return 'TRUE';
 "false"             return 'FALSE';
 "for"               return 'RFOR';
+"while"             return 'RWHILE';
 "if"                return 'RIF';
 "else"              return 'RELSE';
+"switch"            return 'RSWITCH';
+"case"              return 'RCASE';
+"default"           return 'RDEFAULT';
+
 
 
 "+"                 return 'MAS';
@@ -55,7 +60,8 @@
 "char"               return 'RCHAR';
 "boolean"               return 'RBOOLEAN';
 "double"               return 'RDOUBLE';
-
+"new"               return 'RNEW';
+"list"               return 'RLIST';
 
 
 
@@ -100,12 +106,21 @@
   const {Logico} = require('./expression/Logico');
   const {TipoLogico} = require('./utils/TipoLogico');
   const {Agrupacion} = require('./expression/Agrupacion');
+  const {Casteo} = require('./expression/Casteo');
+  const {Switch} = require('./instruction/Switch');
+  const {Case} = require('./instruction/Case');
+  const {While} = require('./instruction/While');
+  const {Modificar} =require('./instruction/Modificar');
 %}
-%left 'AND' 'OR' 'NOT'
-%left 'KLEENE' 'DOSPUNTOS'
-%left 'MENORQUE' 'MAYORQUE' 'MENORIGUAL' 'MAYORIGUAL' 'IGUALIGUAL' 'DIFERENTE'
+
+
+%left 'OR''KLEENE' 'DOSPUNTOS''MODULO' 'PARDER' 'PARIZQ' 'ID'
+%left 'AND'
+%right 'NOT'
+%left 'IGUALIGUAL' 'DIFERENTE' 'MENORQUE' 'MENORIGUAL' 'MAYORQUE' 'MAYORIGUAL'
 %left 'MAS' 'MENOS'
-%left 'POR' 'DIVISION' 'MODULO' 'POTENCIA'
+%left 'DIVISION' 'POR'
+%nonassoc 'POTENCIA'
 %right 'UMENOS '
 
 %start INICIO
@@ -127,7 +142,10 @@ INSTRUCCION
   | LLAMADAFUNCION PTCOMA    { $$ = $1; } 
   | GUARDARFUNCION         { $$ = $1; }
   | FOR   { $$ = $1; }
+  | MODIFICAR  { $$ = $1; }
+  | WHILE   { $$ = $1; }
   | CONTROLIF    { $$ = $1; }
+  | CONTROLSWITCH   { $$ = $1; }
 	| error PTCOMA
   {   console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column);}
 ;
@@ -136,9 +154,16 @@ DEFPRINT
     : RPRIN PARIZQ EXPRESION PARDER PTCOMA  { $$ = new Print(@1.first_line, @1.first_column,$3); }
 ;
 
+MODIFICAR
+: ID IGUAL EXPRESION PTCOMA { $$ = new Modificar($1,$3,@1.first_line, @1.first_column); }
+;
+
 DECLARAR
     : TIPO ID   { $$ = new Declarar($2,$1,null,@1.first_line, @1.first_column ); }
     | TIPO ID IGUAL EXPRESION   { $$ = new Declarar($2,$1,$4,@1.first_line, @1.first_column ); }
+    /*| TIPO  CORIZR CORDER ID IGUAL RNEW TIPO CORIZ EXPRESION CORDER  { $$ = new Declarar($4,$1,$8,@1.first_line, @1.first_column ); }
+    | TIPO CORIZ CORDER ID IGUAL CORIZR EXPRESIONES CORDER { $$ = new Declarar($4,$1,$7,@1.first_line, @1.first_column ); }
+    | RLIST MENORQUE TIPO MAYORQUE ID IGUAL RNEW RLIST MENORQUE TIPO MAYORQUE { $$ = new Declarar($5,$2,$10,@1.first_line, @1.first_column ); }*/
 ;
 
 
@@ -166,9 +191,35 @@ FOR
   : RFOR PARIZQ DECLARAR PTCOMA EXPRESION PTCOMA OPERACIONESUNARIOS PARDER STATEMENT  { $$ = new For($3,$5,$7,$9,@1.first_line, @1.first_column); }
 ;
 
+WHILE
+: RWHILE PARIZQ EXPRESSION PARDER STATEMENT  { $$ = new While($3,$5,@1.first_line, @1.first_column); }
+;
+
 OPERACIONESUNARIOS
   :ID MAS MAS  { $$ = new OperacionesUnarios($1,TipoAritmetica.INCREMENTO,@1.first_line, @1.first_column); }
+  | ID MENOS MENOS  { $$ = new OperacionesUnarios($1,TipoAritmetica.DECREMENTO,@1.first_line, @1.first_column); }
 ;
+
+CONTROLSWITCH
+: RSWITCH PARIZQ EXPRESION PARDER LLAVEIZQ CASELIST DEFAULT LLAVEDER { $$ = new Switch($3,$6,$7,@1.first_line, @1.first_column); }
+;
+
+CASELIST
+: CASELIST CASEITEM { $1.push($2); $$ = $1; }
+| CASEITEM { $$ = [$1]; }
+;
+
+
+CASEITEM
+: RCASE EXPRESION DOSPUNTOS INSTRUCCIONES { $$ = new Case($2,$4,@1.first_line, @1.first_column); }
+;
+
+DEFAULT 
+: RDEFAULT DOSPUNTOS INSTRUCCIONES { $$ = $3; }
+| { $$ = null; }
+;
+
+
 
 CONTROLIF 
   : RIF PARIZQ EXPRESION PARDER STATEMENT CONTROLELSE { $$ = new If($3,$5,$6,@1.first_line, @1.first_column); }
@@ -180,6 +231,13 @@ CONTROLELSE
   | { $$ = null; }
 ;
 
+/*
+EXPRESIONES 
+: EXPRESIONES COMA EXPRESION { $1.push($3); $$ = $1; }
+| EXPRESION { $$ = [$1]; }
+;
+*/
+
 EXPRESION
   : PRIMITIVO       { $$ = $1; }
   | ACCEDERVAR      { $$ = $1; }
@@ -188,6 +246,12 @@ EXPRESION
   | TERNARIO        { $$ = $1; }
   | LOGICO          { $$ = $1; }
   | AGRUPACION      { $$ = $1; }
+  | CASTEO          { $$ = $1; }
+  | OPERACIONESUNARIOS { $$ = $1; }
+;
+
+CASTEO
+  : PARIZQ TIPO PARDER EXPRESION { $$ = new Casteo($2,$4,@1.first_line, @1.first_column); }
 ;
 
 LLAMADAFUNCION
@@ -235,8 +299,10 @@ AGRUPACION
   : PARIZQ EXPRESION PARDER { $$ = new Agrupacion($2,@1.first_line,@1.first_column); }
 ;
 
+
 ACCEDERVAR
   : ID              { $$ = new Acceso($1,@1.first_line, @1.first_column); }
+  |ID CORIZ EXPRESION CORDER { $$ = new Acceso($1,$3,@1.first_line, @1.first_column); }
 ;
 
 PRIMITIVO

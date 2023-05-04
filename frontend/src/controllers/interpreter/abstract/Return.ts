@@ -6,10 +6,20 @@ export enum Type{
   STRING = 4,
   NULL = 5,
   RETURN = 6,
+  BREAK =7,
+  CONTINUE = 8,
+  ARRAY = 9,
+  VECTOR = 10,
 }
 
 
 export type Return = {
   value: any,
   type: Type
+}
+
+export type ReturnVector = {
+  value: any,
+  type: Type,
+  dimensiones: Array<number>
 }

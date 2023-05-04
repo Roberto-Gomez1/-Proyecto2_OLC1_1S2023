@@ -7,5 +7,6 @@ export enum TipoAritmetica {
     POTENCIA,
     MODULO,
     INCREMENTO,
+    DECREMENTO
 }
   

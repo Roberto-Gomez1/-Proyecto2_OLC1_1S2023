@@ -24,6 +24,18 @@ export class Environment {
   
     }
 
+    public guardarVector(id: string, valor: any , tipo: Type,linea:number,columna:number)  {
+      let env: Environment | null = this;
+  
+      if (!env.variables.has(id.toLowerCase())) {
+        env.variables.set(id.toLowerCase(), new Simbolo(valor, id, tipo));
+      }else {
+        printlist.push("Error, La variable "+id+" ya existe en el entorno, linea "+linea+" y columna "+columna);
+      }
+  
+    }
+
+
     public getVar(id: string): Simbolo | null { 
       let env: Environment | null = this;
 

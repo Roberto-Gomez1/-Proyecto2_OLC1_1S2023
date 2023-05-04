@@ -25,6 +25,17 @@ export class OperacionesUnarios extends Expression {
       }
 
     }
+    else if (this.tipoOperacion == TipoAritmetica.DECREMENTO) {
+      const valor = env.getVar(this.id);
+      if (valor) {
+        if (valor.type == Type.INT) {
+          valor.valor = valor.valor - 1;
+          env.modificar(this.id, valor.valor);
+          return { value: valor.valor, type: Type.INT };
+        }
+      }
+    }
+    
 
     return { value: null, type: Type.NULL };
   }

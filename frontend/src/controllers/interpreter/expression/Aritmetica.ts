@@ -48,7 +48,7 @@ export class Aritmetica extends Expression {
           if (op2.type == Type.CHAR) {
             op2.value = op2.value.charCodeAt(0);
           }
-          return { value: op1.value + op2.value, type: Type.DOUBLE };
+          return { value: parseFloat(op1.value + op2.value), type: Type.DOUBLE };
         case Type.STRING:
           return {
             value: op1.value.toString() + op2.value.toString(),
@@ -88,7 +88,7 @@ export class Aritmetica extends Expression {
           if (op2.type == Type.CHAR) {
             op2.value = op2.value.charCodeAt(0);
           }
-          return { value: op1.value - op2.value, type: Type.DOUBLE };
+          return { value: parseFloat(op1.value) - parseFloat(op2.value), type: Type.DOUBLE };
       }
     }
     else if(this.tipoOperacion == TipoAritmetica.MULTIPLICACION){
@@ -111,7 +111,7 @@ export class Aritmetica extends Expression {
           if (op2.type == Type.CHAR) {
             op2.value = op2.value.charCodeAt(0);
           }
-          return { value: op1.value * op2.value, type: Type.DOUBLE };
+          return { value: parseFloat(op1.value) * parseFloat(op2.value), type: Type.DOUBLE };
     }
   }
   else if(this.tipoOperacion == TipoAritmetica.DIVISION){
@@ -134,7 +134,7 @@ export class Aritmetica extends Expression {
         if (op2.type == Type.CHAR) {
           op2.value = op2.value.charCodeAt(0);
         }
-        return { value: op1.value / op2.value, type: Type.DOUBLE };
+        return { value: parseFloat(op1.value) / parseFloat(op2.value), type: Type.DOUBLE };
     }
   
   
@@ -156,7 +156,7 @@ export class Aritmetica extends Expression {
     const tipoDominante = TablaModulo[op1.type][op2.type];
     switch (tipoDominante) {
       case Type.DOUBLE:
-        return { value: op1.value % op2.value, type: Type.DOUBLE };
+        return { value: parseFloat(op1.value) % parseFloat(op2.value), type: Type.DOUBLE };
   
   }
 }
